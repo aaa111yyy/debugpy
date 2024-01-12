@@ -9,6 +9,7 @@ import os.path
 import setuptools
 import subprocess
 import sys
+from setuptools import find_packages
 
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -176,14 +177,7 @@ if __name__ == "__main__":
             "License :: OSI Approved :: MIT License",
         ],
         package_dir={"": "src"},
-        packages=[
-            "debugpy",
-            "debugpy.adapter",
-            "debugpy.common",
-            "debugpy.launcher",
-            "debugpy.server",
-            "debugpy._vendored",
-        ],
+        packages=find_packages(where='src', include=['debugpy*']),
         package_data={
             "debugpy": ["ThirdPartyNotices.txt"],
             "debugpy._vendored": [
