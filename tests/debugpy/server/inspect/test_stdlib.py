@@ -44,6 +44,8 @@ sequence_inspector_test_data = [
     range(1, 4), # range
     "foo", # string
     array.array("i", [1, 2, 3]), # array
+    set([1, 2, 3]), # set
+    frozenset([1, 2, 3]), # frozenset
     collections.namedtuple("Point", ["x", "y"])(1, 2), # namedtuple
     collections.deque([1, 2, 3]), # deque
     collections.UserList([1, 2, 3]), # UserList
@@ -58,8 +60,8 @@ def test_SequenceInspector_children(sequence):
     inspector = SequenceInspector(sequence)
     children = list(inspector.children())
 
-    # The children contain the length and the items, so the length should be 1 + len(sequence)
-    assert len(children) == 1 + len(sequence)
+    # The children contain the length and the items, so the length should be len(sequence) + 1
+    assert len(children) == len(sequence) + 1
 
     # The first item is the length
     assert isinstance(children[0], ChildLen)
@@ -67,10 +69,11 @@ def test_SequenceInspector_children(sequence):
     assert children[0].value == len(sequence)
 
     # The rest of the items are the items in the sequence
+    iterator = iter(sequence)
     for i, child in enumerate(children[1:], 0):
         assert isinstance(child, ChildItem)
         assert child.name == f"[{i}]"
-        assert child.value == sequence[i]
+        assert child.value == next(iterator)
 
 mapping_inspector_test_data = [
     {"key1": "value1", "key2": "value2"}, # dict
